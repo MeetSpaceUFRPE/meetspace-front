@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Input, Button, Typography, notification } from "antd";
 import { loginUsuario } from "../../../services/authService";
+import logo from "../../../assets/meet_space_logo_black.svg";
 
 const { Link } = Typography;
 
@@ -42,7 +43,7 @@ const Login = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
-      <h1 className="text-2xl font-semibold mb-6">Login</h1>
+      <img src={logo} alt="Meet Space" className="w-60 mb-8" />
       <div className="w-80 space-y-4">
         <Input
           placeholder="E-mail"
