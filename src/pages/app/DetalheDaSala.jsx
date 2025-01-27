@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '../../components/Header';
 import ButtonBack from "../../components/ButtonBack";
-import { Card, DatePicker } from 'antd';
+import { Card, DatePicker, Divider } from 'antd';
 import { Row, Col } from 'antd';
 import { TeamOutlined, BuildOutlined } from "@ant-design/icons";
 import { Tag } from 'antd';
@@ -42,7 +42,7 @@ const DetalheDaSala = () => {
           <Col span={24}>
             <h1 className="text-2xl font-bold text-[#D84040] z-0 text-center">{String(sala.nome).toUpperCase()}</h1>
           </Col>
-
+          
           <Col span={12} className="flex justify-start items-center gap-2">
             <BuildOutlined className="text-xl text-gray-600" />
             <div>{sala.localizacao}º andar</div>
@@ -55,16 +55,22 @@ const DetalheDaSala = () => {
           <Col span={24} className="flex items-center gap-2">
             <DatePicker placeholder='Selecione a data' defaultValue={dayjs()} />
           </Col>
+          <Col span={24}>
+            <Divider/>
+          </Col>          
+          <Col span={24}>
+            <h1 className="text-xl font-bold text-[#D84040] z-0 text-left">Disponibilidade</h1>
+          </Col>
 
-          <Col span={24} className="mt-6 w-full">
+          <Col span={24} className="mt-2 w-full">
             {disponibilidade.map((data, index) => (
               <Card
                 key={index}
-                className="w-full mb-4 p-0 md:p-4  shadow border rounded-lg"
+                className="w-full mb-4 p-0 md:p-4 shadow border border-2 hover:shadow-lg rounded-lg"
               >
                 <div className="grid grid-cols-2 md:grid-cols-3 items-center">
                   <span className="font-bold text-[#D84040] text-md text-left">
-                    {String(data.turno).toUpperCase()}<br />
+                    {String((data.turno == 'manha' ? "manhã" : data.turno)).toUpperCase()}<br />
                     <span className='font-normal text-sm'>
                       {data.turno === "manha" ? ("08h - 12h")
                         :
