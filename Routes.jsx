@@ -31,7 +31,7 @@ function AppRoutes() {
         <Route path="/reservas" element={<Reservas />} />
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/criar-sala" element={<CriarSala />} />
-        <Route path="/detalhe-da-sala" element={<DetalheDaSala />} />
+        <Route path="/detalhe-da-sala/:id" element={<DetalheDaSala />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

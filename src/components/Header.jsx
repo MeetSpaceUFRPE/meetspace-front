@@ -10,10 +10,10 @@ const Header = ({ sectionName }) => {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full p-4 bg-gray-800 text-white z-50">
+    <header className="fixed top-0 left-0 w-full p-2 bg-gray-800 text-white z-50">
       <div className="flex items-center justify-between">
         <div className='flex flex-row gap-4 items-center justify-center'>
-            <img src={logo} alt="Logo" className="w-8" />
+            <img src={logo} alt="Logo" className="w-6" />
             <h1 className="text-xl font-semibold">{sectionName}</h1>
         </div> 
         <div className="flex items-center space-x-4">
