@@ -25,3 +25,13 @@ export const createRoom = async (roomData) => {
         throw error;
     }
 };
+
+export const getRooms = async () => {
+    try {
+        const response = await api.get("/api/salas/get");
+        return response.data;
+    } catch (error) {
+        console.error("Erro ao buscar salas:", error);
+        throw error;
+    }
+}

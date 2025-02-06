@@ -1,8 +1,8 @@
 import React from "react";
-import { Col, Divider, Row } from "antd";
+import { Col, Divider, Row, Tag } from "antd";
 import { TeamOutlined, BuildOutlined } from "@ant-design/icons";
 
-const SalaCard = ({ nome, localizacao, capacidade, onClick }) => {
+const SalaCard = ({ nome, localizacao, capacidade, recursos, onClick }) => {
     return (
         <div className="p-5 bg-[#D84040]  text-white rounded-lg h-full shadow-lg hover:shadow-2xl cursor-pointer" onClick={onClick}>
             <Row>
@@ -22,6 +22,15 @@ const SalaCard = ({ nome, localizacao, capacidade, onClick }) => {
                         <TeamOutlined className="mr-1"/>
                         <h1>{capacidade} pessoas</h1>
                     </div>
+                </Col>
+                <Col span={12} className="flex items-center">
+                    {recursos.map((recurso, index) => {
+                        return (
+                            <Tag key={index} className="text-[#D84040] font-semibold mt-3">
+                                {recurso}
+                            </Tag>
+                        );
+                    })}
                 </Col>
             </Row>
         </div>
