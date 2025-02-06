@@ -48,7 +48,7 @@ const Salas = () => {
               capacidade={sala.capacidade}
               localizacao={sala.localizacao}
               recursos={sala.recursos}
-              onClick={() => navigate(`/detalhe-da-sala/${sala.id}`)}
+              onClick={() => navigate(`/detalhe-da-sala/${sala.id}`, { state: { sala } })}
             />
           </Col>
         })}

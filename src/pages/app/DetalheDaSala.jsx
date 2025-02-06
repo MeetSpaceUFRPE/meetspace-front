@@ -8,10 +8,15 @@ import { TeamOutlined, BuildOutlined } from "@ant-design/icons";
 import { Tag } from 'antd';
 import { Button } from 'antd';
 import dayjs from 'dayjs';
+import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { checkAvailability } from '../../services/availabilityService';
 
 const DetalheDaSala = () => {
+  const location = useLocation();
+  const sala = location.state?.sala;
+
   const { id } = useParams();
-  const [sala, setSala] = useState({ nome: "Sala Exemplo", localizacao: 3, capacidade: 30 });
   const [disponibilidade, setDisponibilidade] = useState([
     {
       turno: 'manha',
@@ -26,6 +31,18 @@ const DetalheDaSala = () => {
       disponivel: true,
     },
   ]);
+
+  useEffect(() => {
+    const fetchAvailability = async () => {
+      try {
+        const availability = await checkAvailability(id, dayjs().format("YYYY-MM-DD"));
+        setDisponibilidade(availability);
+      } catch (error) {
+        console.error("Erro ao buscar disponibilidade:", error);
+      }
+    };
+    fetchAvailability();
+  });
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100">
@@ -51,8 +68,17 @@ const DetalheDaSala = () => {
             <TeamOutlined className="text-xl text-gray-600" />
             <h1>{sala.capacidade} pessoas</h1>
           </Col>
+          <Col span={12} className="flex justify-end items-center gap-2">
+            {sala.recursos.map((recurso, index) => {
+              return (
+                <Tag key={index} className="text-[#D84040] font-semibold mt-3">
+                  {recurso}
+                </Tag>
+              );
+            })}
+          </Col>
 
-          <Col span={24} className="flex items-center gap-2">
+          <Col span={24} className="flex items-center gap-2 mt-3 justify-center">
             <DatePicker placeholder='Selecione a data' defaultValue={dayjs()} />
           </Col>
           <Col span={24}>
