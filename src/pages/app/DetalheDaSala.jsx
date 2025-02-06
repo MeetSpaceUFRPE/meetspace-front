@@ -6,43 +6,56 @@ import { Card, DatePicker, Divider } from 'antd';
 import { Row, Col } from 'antd';
 import { TeamOutlined, BuildOutlined } from "@ant-design/icons";
 import { Tag } from 'antd';
-import { Button } from 'antd';
+import { Button, notification } from 'antd';
 import dayjs from 'dayjs';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { checkAvailability } from '../../services/availabilityService';
+import { createBooking } from '../../services/bookingService';
 
 const DetalheDaSala = () => {
   const location = useLocation();
   const sala = location.state?.sala;
-
   const { id } = useParams();
-  const [disponibilidade, setDisponibilidade] = useState([
-    {
-      turno: 'manha',
-      disponivel: true,
-    },
-    {
-      turno: 'tarde',
-      disponivel: false,
-    },
-    {
-      turno: 'noite',
-      disponivel: true,
-    },
-  ]);
+  
+  const [disponibilidade, setDisponibilidade] = useState([]);
+  const [data, setData] = useState(dayjs().format("YYYY-MM-DD"));
 
   useEffect(() => {
-    const fetchAvailability = async () => {
-      try {
-        const availability = await checkAvailability(id, dayjs().format("YYYY-MM-DD"));
-        setDisponibilidade(availability);
-      } catch (error) {
-        console.error("Erro ao buscar disponibilidade:", error);
-      }
-    };
-    fetchAvailability();
-  });
+    fetchAvailability(data);
+  }, [data]);
+
+  const fetchAvailability = async (date) => {
+    try {
+      const availability = await checkAvailability(id, date);
+      setDisponibilidade(availability);
+    } catch (error) {
+      console.error("Erro ao buscar disponibilidade:", error);
+    }
+  };
+
+  const handleBooking = async (turno) => {
+    try {
+      const bookingData = {
+        salaId: id,
+        data,
+        turno,
+      };
+      await createBooking(bookingData);
+      notification.success({
+        message: "Reserva efetuada com sucesso!",
+        description: `Sua reserva foi efetuada com sucesso para o turno da ${turno}.`,
+      });
+    } catch (error) {
+      console.error("Erro ao efetuar reserva:", error);
+      notification.error({
+        message: "Erro ao efetuar reserva:",
+        description: error.response.data.error,
+      });
+    } finally {
+      fetchAvailability(data);
+    }
+  }
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100">
@@ -79,7 +92,11 @@ const DetalheDaSala = () => {
           </Col>
 
           <Col span={24} className="flex items-center gap-2 mt-3 justify-center">
-            <DatePicker placeholder='Selecione a data' defaultValue={dayjs()} />
+            <DatePicker 
+              placeholder='Selecione a data'
+              defaultValue={dayjs()} 
+              onChange={(date) => setData(dayjs(date).format("YYYY-MM-DD"))}
+            />
           </Col>
           <Col span={24}>
             <Divider/>
@@ -120,6 +137,7 @@ const DetalheDaSala = () => {
                       type="default"
                       disabled={!data.disponivel}
                       className="bg-[#D84040] mt-2 md:mt-0 text-white hover:text-[#D84040] hover:bg-white hover:border-[#D84040]"
+                      onClick={() => handleBooking(data.turno)}
                     >
                       Reservar
                     </Button>

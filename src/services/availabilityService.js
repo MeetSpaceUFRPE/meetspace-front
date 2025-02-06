@@ -8,7 +8,7 @@ export const checkAvailability = async (salaId, data) => {
         const response = await api.get(`/api/disponivel/${salaId}/${turno}/${data}`);
         availability.push({
             turno,
-            disponivel: response.data
+            disponivel: response.data.available
         });
     }
     return availability;
