@@ -3,6 +3,7 @@ import { Input, Button, Typography, DatePicker, notification } from "antd";
 import BackButton from "../../../components/ButtonBack";
 import { cadastrarUsuario } from "../../../services/signupService";
 import { formatDate } from "../../../utils/formatDate";
+import { useNavigate } from "react-router-dom";
 
 const { Link } = Typography;
 
@@ -11,12 +12,15 @@ const Cadastro = () => {
   const [email, setEmail] = useState("");
   const [dataNascimento, setDataNascimento] = useState(null);
   const [senha, setSenha] = useState("");
+  const [department, setDepartment] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate();
+
   const handleSubmit = async () => {
     // Validações
-    if (!nome || !email || !senha || !confirmarSenha || !dataNascimento) {
+    if (!nome || !email || !senha || !confirmarSenha || !dataNascimento || !department) {
       notification.warning({
         message: "Campos obrigatórios",
         description: "Preencha todos os campos.",
@@ -55,10 +59,11 @@ const Cadastro = () => {
     const formattedDate = dataNascimento ? formatDate(dataNascimento) : null;
 
     const userData = {
-      nome,
+      name: nome,
       email,
       dataNascimento: formattedDate,
-      senha,
+      password: senha,
+      department,
     };
 
     setLoading(true);
@@ -70,6 +75,7 @@ const Cadastro = () => {
         placement: "bottom",
       });
       // Redirecionar para login ou home
+      navigate("/auth/login");
     } catch (error) {
       notification.error({
         message: "Erro",
@@ -98,6 +104,12 @@ const Cadastro = () => {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="rounded"
+        />
+        <Input
+          placeholder="Departamento"
+          value={department}
+          onChange={(e) => setDepartment(e.target.value)}
           className="rounded"
         />
         <DatePicker
@@ -129,7 +141,7 @@ const Cadastro = () => {
       </div>
       <p className="mt-4">
         Já possui uma conta?{" "}
-        <Link to="/auth/login" className="text-red-500">
+        <Link href="/auth/login" className="text-red-500">
           Faça login
         </Link>
       </p>

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Input, Button, Typography, notification } from "antd";
 import { loginUsuario } from "../../../services/authService";
 import logo from "../../../assets/meet_space_logo_black.svg";
+import { useNavigate } from "react-router-dom";
 
 const { Link } = Typography;
 
@@ -10,6 +11,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     if (!email || !senha) {
@@ -30,6 +32,7 @@ const Login = () => {
         placement: "bottom",
       });
       // TODO: Redirecionar para o painel ou home
+      navigate("/home");          
     } catch (error) {
       notification.error({
         message: "Erro",
