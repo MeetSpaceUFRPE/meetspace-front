@@ -1,23 +1,24 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import ButtonBack from "../../components/ButtonBack";
 import { Card, DatePicker, Divider } from 'antd';
 import { Row, Col } from 'antd';
 import { TeamOutlined, BuildOutlined } from "@ant-design/icons";
-import { Tag } from 'antd';
+import { Tag, Modal } from 'antd';
 import { Button, notification } from 'antd';
 import dayjs from 'dayjs';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { checkAvailability } from '../../services/availabilityService';
 import { createBooking } from '../../services/bookingService';
+import { deleteRoom } from '../../services/roomService';
 
 const DetalheDaSala = () => {
   const location = useLocation();
   const sala = location.state?.sala;
   const { id } = useParams();
-  
+
   const [disponibilidade, setDisponibilidade] = useState([]);
   const [data, setData] = useState(dayjs().format("YYYY-MM-DD"));
 
@@ -37,7 +38,7 @@ const DetalheDaSala = () => {
   const handleBooking = async (turno) => {
     try {
       const bookingData = {
-        salaId: id,
+        salaId: sala.id,
         data,
         turno,
       };
@@ -55,6 +56,31 @@ const DetalheDaSala = () => {
     } finally {
       fetchAvailability(data);
     }
+  }
+
+  const navigate = useNavigate();
+  const handleDelete = async () => {
+    Modal.confirm({
+      title: "Deletar Sala",
+      content: "Tem certeza que deseja deletar essa sala?",
+      onOk: async () => {
+        try {
+          await deleteRoom(id);
+          notification.success({
+            message: "Sala deletada com sucesso!",
+            description: `A sala ${sala.nome} foi deletada com sucesso.`,
+          });
+          navigate("/salas");
+        } catch (error) {
+          console.error("Erro ao deletar sala:", error);
+          notification.error({
+            message: "Erro ao deletar sala:",
+            description: error.response.data.error,
+          });
+        }
+      },
+      onCancel: () => { },
+    });
   }
 
   return (
@@ -81,7 +107,7 @@ const DetalheDaSala = () => {
             <TeamOutlined className="text-xl text-gray-600" />
             <h1>{sala.capacidade} pessoas</h1>
           </Col>
-          <Col span={12} className="flex justify-end items-center gap-2">
+          <Col span={12} className="flex justify-center items-center gap-2">
             {sala.recursos.map((recurso, index) => {
               return (
                 <Tag key={index} className="text-[#D84040] font-semibold mt-3">
@@ -145,6 +171,17 @@ const DetalheDaSala = () => {
                 </div>
               </Card>
             ))}
+          </Col>
+          <Col span={24}>
+            <div>
+              <Button
+                type="default"
+                className="bg-[#D84040] mt-2 md:mt-0 text-white hover:text-[#D84040] hover:bg-white hover:border-[#D84040] w-full"
+                onClick={handleDelete}
+              >
+                Deletar Sala
+              </Button>
+            </div>
           </Col>
         </Row>
       </div>

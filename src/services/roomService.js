@@ -35,3 +35,18 @@ export const getRooms = async () => {
         throw error;
     }
 }
+
+export const deleteRoom = async (id) => {
+    try {
+        const access_token = localStorage.getItem("access_token");
+        const response = await api.delete(`/api/salas/delete/${id}`, {
+            headers: {
+                Authorization: `Bearer ${access_token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Erro ao deletar sala:", error);
+        throw error;
+    }
+}
