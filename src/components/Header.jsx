@@ -1,12 +1,15 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BellOutlined } from '@ant-design/icons';  // Importando o ícone de sino do antd
 import PropTypes from 'prop-types'; // Para garantir que o nome da seção seja passado como prop
 import logo from '../assets/meetspace.svg'; // Importando a logo
 
 const Header = ({ sectionName }) => {
+  const navigate = useNavigate();
   const handleLogout = () => {
     // Lógica para sair, pode ser implementação de redirecionamento ou limpeza de estado
-    console.log('Saindo...');
+    localStorage.removeItem('access_token');
+    navigate('/');
   };
 
   return (
