@@ -8,7 +8,7 @@ const { Option } = Select;
 
 const CriarSala = () => {
   const [nome, setNome] = useState("");
-  const [capacidade, setCapacidade] = useState(0);
+  const [capacidade, setCapacidade] = useState();
   const [localizacao, setLocalizacao] = useState("");
   const [recursos, setRecursos] = useState("");
 

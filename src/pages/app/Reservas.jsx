@@ -1,33 +1,61 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Header from "../../components/Header";
 import ButtonBack from "../../components/ButtonBack";
 import { useState } from 'react'
 import { Col, Row } from 'antd';
 import ReservaCard from '../../components/ReservaCard';
+import { getUserBookings } from '../../services/bookingService';
+import { getRooms } from '../../services/roomService';
 
 const Reservas = () => {
-    // Recebe uma array de objetos referente à sala
-    const [array, setArray] = useState([
-      { nome: "Sala de Reunião", capacidade: 20, localizacao: 1 },
-      { nome: "Auditório Central", capacidade: 100, localizacao: 2 },
-      { nome: "Laboratório de Informática", capacidade: 15, localizacao: 4 },
-      { nome: "Biblioteca", capacidade: 50, localizacao: 1 },
-      { nome: "Sala de Conferência", capacidade: 40, localizacao: 3 },
-      { nome: "Espaço Colaborativo", capacidade: 25, localizacao: 2 },
-      { nome: "Sala de Treinamento", capacidade: 35, localizacao: 5 },
-      { nome: "Anfiteatro", capacidade: 80, localizacao: 2 },
-      { nome: "Sala Privativa", capacidade: 10, localizacao: 3 },
-      { nome: "Hall de Entrada", capacidade: 60, localizacao: 1 },
-    ]);
+    // array de reservas
+    const [array, setArray] = useState([]);
 
-  return (
+    const fetchBookings = async () => {
+      try {
+        let bookings = await getUserBookings();
+        const salas = await fetchAllRooms();
+
+        for (let reserva of bookings) {
+          reserva.sala = salas.find(sala => sala.id === reserva.salaId);
+        }
+
+        setArray(bookings); console.log(bookings);
+      } catch (error) {
+        console.error("Erro ao buscar reservas:", error);
+      }
+    }
+
+    const fetchAllRooms = async () => {
+      try {
+        const rooms = await getRooms();
+        return rooms;
+      } catch (error) {
+        console.error("Erro ao buscar salas:", error);
+      }
+    };
+
+    useEffect(() => {
+      fetchBookings();
+    }, []);
+
+    return (
     <div>
       <ButtonBack path={"/home"} style="fixed top-24 left-4 z-50" />
       <Header sectionName={"Reservas"} />
       <Row className='h-auto flex justify-center content-center md:px-24 my-28' gutter={[16, 16]}>
-        {array.map((sala) => {
+        {array.map((reserva) => {
           return <Col xs={20} md={10} lg={9}>
-            <ReservaCard nome={sala.nome} capacidade={sala.capacidade} localizacao={sala.localizacao} data={"2025-04-24"} turno={"Tarde"}/>
+            <ReservaCard
+              id={reserva.id}
+              nome={reserva.sala.nome}
+              capacidade={reserva.sala.capacidade}
+              localizacao={reserva.sala.localizacao}
+              data={reserva.data}
+              turno={reserva.turno}
+              reservadaEm={reserva.createdAt}
+              fetchBookings={fetchBookings}
+            />
           </Col>
         })}
       </Row>
