@@ -1,29 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Button } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { Input, Button, Modal, Divider } from 'antd';
 import Header from "../../components/Header";
 import ButtonBack from "../../components/ButtonBack";
-import { updatePerfil } from '../../services/perfilService'; 
-import { getPerfil } from '../../services/perfilService';
+import { getPerfil, updatePerfil, deletePerfil } from '../../services/perfilService';
 
 const Perfil = () => {
-  const [nome, setNome] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [dataNascimento, setDataNascimento] = useState('');
-  const [senha, setSenha] = useState('');
+  const [department, setDepartment] = useState('');
+  const [password, setPassword] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [loading, setLoading] = useState(false);
 
   const loadPerfil = async () => {
     try {
       const response = await getPerfil(); 
-      const { nome, email, dataNascimento } = response; 
-      setNome(nome || 'Erro no nome');
-      setEmail(email || 'erro@gmail.com');
-      setDataNascimento(dataNascimento || '1990-01-01');
+      const { name, email, department } = response; 
+      setName(name || 'Erro ao carregar nome');
+      setEmail(email || 'Erro ao carregar email');
+      setDepartment(department || 'Erro ao carregar departamento');
     } catch (err) {
-      setNome('Erro no nome');
-      setEmail('erro@gmail.com');
-      setDataNascimento('1990-01-01');
+      alert(err.message || 'Erro ao carregar perfil');
     }
   };
 
@@ -32,7 +30,7 @@ const Perfil = () => {
   }, []);
 
   const handleSubmit = async () => {
-    if (senha !== confirmarSenha) {
+    if (password !== confirmarSenha) {
       alert('As senhas não coincidem.');
       return;
     }
@@ -41,10 +39,10 @@ const Perfil = () => {
 
     try {
       const userProfileData = {
-        nome,
+        name,
         email,
-        dataNascimento,
-        senha,
+        department,
+        password,
       };
       await updatePerfil(userProfileData);
       alert('Perfil atualizado com sucesso!');
@@ -55,6 +53,25 @@ const Perfil = () => {
     }
   };
 
+  const navigate = useNavigate();
+  const handleDelete = async () => {
+    Modal.confirm({
+      title: 'Tem certeza que deseja excluir seu perfil?',
+      content: 'Essa ação não pode ser desfeita.',
+      okText: 'Sim',
+      cancelText: 'Cancelar',
+      onOk: async () => {
+        try {
+          await deletePerfil(password);
+          alert('Perfil excluído com sucesso!');
+          navigate('/login');
+        } catch (err) {
+          alert(err.message || 'Erro ao excluir o perfil');
+        }
+      },
+    });
+  }
+
   return (
     <div className='flex flex-col items-center justify-center min-h-screen'>
       <ButtonBack path="/home" style="fixed top-24 left-4 z-50" />
@@ -62,11 +79,14 @@ const Perfil = () => {
       
       <h1 className="text-2xl font-semibold mb-6">Editar Perfil</h1>
       
-      <div className="w-80 space-y-4">
+      <div 
+        className="w-80 space-y-4"
+        onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}  
+      >
         <Input
           placeholder="Nome completo"
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           className="rounded"
         />
         <Input
@@ -77,16 +97,15 @@ const Perfil = () => {
           className="rounded"
         />
         <Input
-          type="date"
-          placeholder="Data de nascimento"
-          value={dataNascimento}
-          onChange={(e) => setDataNascimento(e.target.value)}
+          placeholder="Departamento"
+          value={department}
+          onChange={(e) => setDepartment(e.target.value)}
           className="rounded"
         />
         <Input.Password
           placeholder="Senha"
-          value={senha}
-          onChange={(e) => setSenha(e.target.value)}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           className="rounded"
         />
         <Input.Password
@@ -103,6 +122,25 @@ const Perfil = () => {
           loading={loading}
         >
           Atualizar perfil
+        </Button>
+
+        <Divider className='my-4'>ou</Divider>
+
+        <p className="text-center text-sm text-gray-500">
+          Zona de perigo! Essa ação não pode ser desfeita.
+        </p>
+        <Input.Password
+          placeholder="Digite sua senha para confirmar"
+          className="rounded mt-4"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Button
+          type="primary"
+          danger
+          className="w-full"
+          onClick={handleDelete}
+        >
+          Excluir perfil
         </Button>
       </div>
     </div>
