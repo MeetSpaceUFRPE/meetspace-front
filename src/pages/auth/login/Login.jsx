@@ -47,7 +47,14 @@ const Login = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
       <img src={logo} alt="Meet Space" className="w-60 mb-8" />
-      <div className="w-80 space-y-4">
+      <div 
+        className="w-80 space-y-4"
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            handleLogin();
+          }
+        }}
+      >
         <Input
           placeholder="E-mail"
           type="email"
@@ -69,6 +76,7 @@ const Login = () => {
           className="w-full bg-red-600 hover:bg-red-500"
           onClick={handleLogin}
           loading={loading} // Adiciona o estado de carregamento
+          disabled={!email || !senha} 
         >
           Entrar
         </Button>

@@ -92,7 +92,14 @@ const Cadastro = () => {
       <BackButton path={"/auth/login"} style="fixed top-24 left-4 z-50" />
 
       <h1 className="text-2xl font-semibold mb-6">Crie uma conta</h1>
-      <div className="w-80 space-y-4">
+      <div
+        className="w-80 space-y-4"
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            handleSubmit();
+          }
+        }}
+      >
         <Input
           placeholder="Nome completo"
           value={nome}
@@ -135,6 +142,7 @@ const Cadastro = () => {
           className="w-full bg-red-600 hover:bg-red-500"
           onClick={handleSubmit}
           loading={loading} // Indicador de carregamento
+          disabled={!nome || !email || !dataNascimento || !senha || !confirmarSenha || !department}
         >
           Criar conta
         </Button>
