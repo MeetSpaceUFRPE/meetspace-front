@@ -16,6 +16,7 @@ import Perfil from './src/pages/app/Perfil';
 import NotFound from './src/pages/NotFound';
 import CriarSala from './src/pages/app/CriarSala';
 import DetalheDaSala from './src/pages/app/DetalheDaSala';
+import Relatorios from './src/pages/app/Relatorios';
 
 function AppRoutes() {
   return (
@@ -29,6 +30,7 @@ function AppRoutes() {
         <Route path="/home" element={<Home />} />
         <Route path="/salas" element={<Salas />} />
         <Route path="/reservas" element={<Reservas />} />
+        <Route path="/relatorios/:id" element={<Relatorios />} />
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/criar-sala" element={<CriarSala />} />
         <Route path="/detalhe-da-sala/:id" element={<DetalheDaSala />} />
