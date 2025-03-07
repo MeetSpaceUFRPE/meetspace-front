@@ -4,7 +4,7 @@ import Header from '../../components/Header';
 import ButtonBack from "../../components/ButtonBack";
 import { Card, DatePicker, Divider } from 'antd';
 import { Row, Col } from 'antd';
-import { TeamOutlined, BuildOutlined } from "@ant-design/icons";
+import { TeamOutlined, BuildOutlined, AreaChartOutlined } from "@ant-design/icons";
 import { Tag, Modal } from 'antd';
 import { Button, notification } from 'antd';
 import dayjs from 'dayjs';
@@ -107,14 +107,23 @@ const DetalheDaSala = () => {
             <TeamOutlined className="text-xl text-gray-600" />
             <h1>{sala.capacidade} pessoas</h1>
           </Col>
-          <Col span={12} className="flex justify-center items-center gap-2">
+          <Col span={12} className="flex-col justify-center items-center gap-2">
             {sala.recursos.map((recurso, index) => {
               return (
-                <Tag key={index} className="text-[#D84040] font-semibold mt-3">
+                <Tag key={index} className="text-[#D84040] font-semibold my-3 flex-row">
                   {recurso}
                 </Tag>
               );
             })}
+
+            <Button
+              type="default"
+              className="bg-[#D84040] mt-2 md:mt-0 text-white hover:text-[#D84040] hover:bg-white hover:border-[#D84040] w-full"
+              onClick={() => navigate(`/relatorios/${id}`)}
+            >
+              <AreaChartOutlined className="text-white" />
+              Relatórios
+            </Button>
           </Col>
 
           <Col span={24} className="flex items-center gap-2 mt-3 justify-center">
